@@ -15,9 +15,11 @@ def main():
     bb_img = pg.Surface((20,20))
     pg.draw.circle(bb_img, (255, 0, 0), (10, 10), 10)  # 爆弾作成
     bb_img.set_colorkey((0, 0, 0))
-    x, y = random.randint(0,600), random.randint(0,900)
-    screen.blit(bb_img, [x,y])
-    
+    x, y = random.randint(0,1600), random.randint(0,900)
+    #screen.blit(bb_img, [x,y])
+    vx,vy=+1,-1
+    bb_rect = bb_img.get_rect()
+    bb_rect.center = x, y
 
     while True:
         for event in pg.event.get():
@@ -27,7 +29,8 @@ def main():
         tmr += 1
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, [900, 400])
-        screen.blit(bb_img, [x,y])
+        bb_rect.move_ip(vx, vy)  #爆弾を動かす
+        screen.blit(bb_img, bb_rect)
 
 
         pg.display.update()
