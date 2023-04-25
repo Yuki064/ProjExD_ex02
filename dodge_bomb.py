@@ -85,7 +85,7 @@ def main():
         
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, kk_rect)
-        #screen.blit(kk_imgs[mv], kk_rect)
+        
         bb_rect.move_ip(vx, vy)  # 爆弾を動かす
         yoko, tate = cheack_bound(screen.get_rect(), bb_rect)  # 爆弾が画面から出ないように
         if not yoko:
