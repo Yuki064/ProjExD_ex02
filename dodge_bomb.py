@@ -2,6 +2,14 @@ import random
 import sys
 import pygame as pg
 
+delta = {
+    #keyの辞書
+    pg.K_UP: (0, -1),
+    pg.K_DOWN: (0, +1),
+    pg.K_LEFT: (-1, 0),
+    pg.K_RIGHT: (+1, 0)
+}
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((1600, 900))
@@ -11,7 +19,6 @@ def main():
     kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
     tmr = 0
 
-    #Rect = pg.Rect()
     bb_img = pg.Surface((20,20))
     pg.draw.circle(bb_img, (255, 0, 0), (10, 10), 10)  # 爆弾作成
     bb_img.set_colorkey((0, 0, 0))
@@ -20,6 +27,8 @@ def main():
     vx,vy=+1,-1
     bb_rect = bb_img.get_rect()
     bb_rect.center = x, y
+    kk_rect = kk_img.get_rect()
+    kk_rect.center = 900, 400
 
     while True:
         for event in pg.event.get():
@@ -28,7 +37,13 @@ def main():
 
         tmr += 1
         screen.blit(bg_img, [0, 0])
-        screen.blit(kk_img, [900, 400])
+        screen.blit(kk_img, kk_rect)
+
+        key_lst = pg.key.get_pressed()
+        for k, mv in delta.items():
+            if key_lst[k]:
+                kk_rect.move_ip((mv))  # keyに応じてこうかとんを動かす
+
         bb_rect.move_ip(vx, vy)  #爆弾を動かす
         screen.blit(bb_img, bb_rect)
 
