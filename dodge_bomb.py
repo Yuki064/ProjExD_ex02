@@ -11,6 +11,7 @@ delta = {
 }
 
 
+
 def cheack_bound(scr_rct:pg.Rect, obj_rct:pg.Rect):
     """
     オブジェクトが画面内OR画面外を判定し　真理値タプルを返す
@@ -30,10 +31,26 @@ def cheack_bound(scr_rct:pg.Rect, obj_rct:pg.Rect):
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((1600, 900))
+    
     clock = pg.time.Clock()
     bg_img = pg.image.load("ex02/fig/pg_bg.jpg")
     kk_img = pg.image.load("ex02/fig/3.png")
+    kk_img_go = pg.image.load("ex02/fig/4.png")
     kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
+    kk_img1 = pg.transform.flip(kk_img, True, False)
+
+    kk_imgs = {
+        (0, -1): pg.transform.rotozoom(kk_img, 90, 2.0),
+        (+1, -1): pg.transform.rotozoom(kk_img, 45, 2.0),
+        (+1, 0): pg.transform.rotozoom(kk_img, 0, 2.0),
+        (+1, +1): pg.transform.rotozoom(kk_img, -45, 2.0),
+        (0, +1): pg.transform.rotozoom(kk_img, -90, 2.0),
+    
+        (-1, +1): pg.transform.rotozoom(kk_img1, -45, 2.0),
+        (-1, 0): pg.transform.rotozoom(kk_img1, 0, 2.0),
+        (-1, -1): pg.transform.rotozoom(kk_img1, 45, 2.0)
+    }
+    
     tmr = 0
 
     bb_img = pg.Surface((20,20))
@@ -54,27 +71,31 @@ def main():
 
         tmr += 1
         
+        #idou = []
 
         key_lst = pg.key.get_pressed()
         for k, mv in delta.items():
             if key_lst[k]:
-                kk_rect.move_ip((mv))  # keyに応じてこうかとんを動かす
-                if cheack_bound(screen.get_rect(), kk_rect) != (True, True):
+                kk_rect.move_ip((mv))  #keyに応じてこうかとんを動かす
+                
+                if cheack_bound(screen.get_rect(), kk_rect) != (True, True):  #こうかとんが画面外にいかないように
                     for k, mv in delta.items():
                         if key_lst[k]:
                             kk_rect.move_ip((-mv[0], -mv[1]))
         
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, kk_rect)
-        bb_rect.move_ip(vx, vy)  #爆弾を動かす
-        yoko, tate = cheack_bound(screen.get_rect(), bb_rect)
+        #screen.blit(kk_imgs[mv], kk_rect)
+        bb_rect.move_ip(vx, vy)  # 爆弾を動かす
+        yoko, tate = cheack_bound(screen.get_rect(), bb_rect)  # 爆弾が画面から出ないように
         if not yoko:
             vx *= -1
         if not tate:
             vy *= -1
         
         screen.blit(bb_img, bb_rect)
-        if kk_rect.colliderect(bb_rect):
+        if kk_rect.colliderect(bb_rect):  # 衝突
+            screen.blit(kk_img_go, kk_rect)
             return
 
         screen.blit(bb_img, bb_rect)
